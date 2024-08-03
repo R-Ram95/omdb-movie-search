@@ -1,21 +1,25 @@
-import { useState } from "react";
-import { Movie } from "../types/Movie";
 import MovieTile from "./MovieTile";
 import { useOMDBMovieSearch } from "../hooks/useOMDBMovieSearch";
 
 const MovieSearch = () => {
-  const [movies, setMovies] = useState<Movie[] | undefined>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const { isLoading, error, execute: searchMovies } = useOMDBMovieSearch();
+  const { loading, error, movies, setSearchTerm, page, setPage, totalResults } =
+    useOMDBMovieSearch();
 
-  const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const title = e.target.value;
+    setPage(1);
     setSearchTerm(title);
-    console.log(searchTerm);
-    if (searchTerm.length > 0) {
-      const omdbSearchResponse = await searchMovies(title);
-      setMovies(omdbSearchResponse?.Search);
+  };
+
+  const handleNextPage = () => {
+    if (page * 10 < totalResults) {
+      setPage(page + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
     }
   };
 
@@ -23,12 +27,12 @@ const MovieSearch = () => {
     <div className="flex justify-center items-center flex-col">
       <input
         type="text"
-        placeholder="Enter Move Title"
+        placeholder="Enter Movie Title"
         className="input input-bordered w-full max-w-xs"
-        onChange={(e) => handleSearch(e)}
+        onChange={handleSearchChange}
       />
 
-      {isLoading && (
+      {loading && (
         <div className="flex justify-center items-center h-64">
           <span className="loading loading-spinner loading-xs"></span>
         </div>
@@ -36,7 +40,7 @@ const MovieSearch = () => {
 
       {error && <div className="alert alert-error mt-4">{error}</div>}
 
-      {!isLoading && !error && (
+      {!loading && !error && (
         <>
           {movies && movies.length > 0 ? (
             <div className="mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full p-4">
@@ -45,9 +49,26 @@ const MovieSearch = () => {
               ))}
             </div>
           ) : (
-            <div className="mt-4">No Movies Found</div>
+            <div className="mt-4">Search a movie!</div>
           )}
         </>
+      )}
+
+      {!loading && !error && movies && movies.length > 0 && (
+        <div className="join grid grid-cols-2 mb-5">
+          <button
+            className="join-item btn btn-outline"
+            onClick={handlePrevPage}
+          >
+            Previous page
+          </button>
+          <button
+            className="join-item btn btn-outline"
+            onClick={handleNextPage}
+          >
+            Next
+          </button>
+        </div>
       )}
     </div>
   );
