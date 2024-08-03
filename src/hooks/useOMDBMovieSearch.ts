@@ -42,7 +42,7 @@ export const useOMDBMovieSearch = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const execute = async (movieTitle: string, page = 0) => {
+  const execute = async (movieTitle: string, page = 1) => {
     try {
       setIsLoading(true);
       const response = await searchOMDBMovies({
@@ -53,6 +53,7 @@ export const useOMDBMovieSearch = () => {
       if (response?.Response === OMDBResponseOptions.failed) {
         throw new Error(response.Error);
       }
+      setError("");
 
       return response;
     } catch (error) {
