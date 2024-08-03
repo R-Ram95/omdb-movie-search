@@ -25,12 +25,28 @@ const MovieSearch = () => {
 
   return (
     <div className="flex justify-center items-center flex-col">
-      <input
-        type="text"
-        placeholder="Enter Movie Title"
-        className="input input-bordered w-full max-w-xs"
-        onChange={handleSearchChange}
-      />
+      <div className="relative w-full max-w-xs">
+        <input
+          type="text"
+          placeholder="Enter Movie Title"
+          className="input input-bordered w-full pl-10 pr-3"
+          onChange={handleSearchChange}
+        />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          stroke="currentColor"
+          className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
+        </svg>
+      </div>
 
       {loading && (
         <div className="flex justify-center items-center h-64">
@@ -59,12 +75,14 @@ const MovieSearch = () => {
           <button
             className="join-item btn btn-outline"
             onClick={handlePrevPage}
+            disabled={page === 1}
           >
             Previous page
           </button>
           <button
             className="join-item btn btn-outline"
             onClick={handleNextPage}
+            disabled={page * 10 > totalResults}
           >
             Next
           </button>
