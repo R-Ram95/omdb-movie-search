@@ -1,4 +1,5 @@
-import { Movie } from "../types/Movie";
+import defaultImg from "../../public/default-poster.jpg";
+import { Movie } from "../types/omdbTypes";
 
 interface MovieTileProps {
   movie: Movie;
@@ -9,7 +10,7 @@ const MovieTile = ({ movie }: MovieTileProps) => {
     <div className="card bg-base-100 w-96 h-full mx-auto">
       <figure className="px-10 pt-10">
         <img
-          src={movie.Poster}
+          src={movie.Poster !== "N/A" ? movie.Poster : defaultImg}
           alt="Could not find Poster"
           style={{ height: "300px", objectFit: "cover" }}
           className="rounded-xl"
