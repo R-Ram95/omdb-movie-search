@@ -25,28 +25,26 @@ const MovieSearch = () => {
 
   return (
     <div className="flex justify-center items-center flex-col">
-      <div className="relative w-full max-w-xs">
+      <label className="input input-bordered input-primary flex items-center gap-2 pl-10 pr-3">
         <input
           type="text"
           placeholder="Enter Movie Title"
-          className="input input-bordered w-full pl-10 pr-3"
+          className=""
           onChange={handleSearchChange}
         />
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth="1.5"
-          stroke="currentColor"
-          className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+          viewBox="0 0 16 16"
+          fill="currentColor"
+          className="h-4 w-4 opacity-70"
         >
           <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+            fillRule="evenodd"
+            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+            clipRule="evenodd"
           />
         </svg>
-      </div>
+      </label>
 
       {loading && (
         <div className="flex justify-center items-center h-64">
@@ -54,12 +52,12 @@ const MovieSearch = () => {
         </div>
       )}
 
-      {error && <div className="alert alert-error mt-4">{error}</div>}
+      {error && <div className="mt-10 alert alert-error">{error}</div>}
 
       {!loading && !error && (
         <>
           {movies && movies.length > 0 ? (
-            <div className="mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full p-4">
+            <div className="mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3 w-full p-4">
               {movies.map((movie) => (
                 <MovieTile key={movie.imdbID} movie={movie} />
               ))}
@@ -73,14 +71,14 @@ const MovieSearch = () => {
       {!loading && !error && movies && movies.length > 0 && (
         <div className="join grid grid-cols-2 mb-5">
           <button
-            className="join-item btn btn-outline"
+            className="join-item btn btn-outline btn-secondary"
             onClick={handlePrevPage}
             disabled={page === 1}
           >
             Previous page
           </button>
           <button
-            className="join-item btn btn-outline"
+            className="join-item btn btn-outline btn-secondary"
             onClick={handleNextPage}
             disabled={page * 10 > totalResults}
           >

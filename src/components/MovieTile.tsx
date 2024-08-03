@@ -20,7 +20,7 @@ const MovieTile = ({ movie }: MovieTileProps) => {
         <h2 className="card-title">{movie.Title}</h2>
         <p>{movie.Year}</p>
         <div className="card-actions">
-          <button className="btn btn-primary">More Details</button>
+          <button className="btn btn-accent">More Details</button>
         </div>
       </div>
     </div>
