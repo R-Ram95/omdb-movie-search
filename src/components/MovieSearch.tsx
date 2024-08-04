@@ -3,24 +3,19 @@ import { useOMDBMovieSearch } from "../hooks/useOMDBMovieSearch";
 import { useEffect, useRef } from "react";
 
 const MovieSearch = () => {
+  const observerTarget = useRef<HTMLDivElement | null>(null);
   const { loading, error, movies, setSearchTerm, hasMore, setPage } =
     useOMDBMovieSearch();
-  const observerTarget = useRef<HTMLDivElement | null>(null);
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const title = e.target.value;
-    setPage(1);
-    setSearchTerm(title);
-  };
 
   useEffect(() => {
+    // used for infinite scrolling: https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore) {
+        if (entries[0].isIntersecting && hasMore && !loading) {
           setPage((prevPage) => prevPage + 1);
         }
       },
-      { threshold: 1 }
+      { root: null, threshold: 1 }
     );
 
     if (observerTarget.current) {
@@ -28,12 +23,19 @@ const MovieSearch = () => {
     }
 
     return () => {
+      // stop watching the target on cleanup
       if (observerTarget.current) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         observer.unobserve(observerTarget.current);
       }
     };
-  }, [hasMore, observerTarget, setPage]);
+  }, [hasMore, loading, observerTarget, setPage]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const title = e.target.value;
+    setPage(1);
+    setSearchTerm(title);
+  };
 
   return (
     <div className="flex justify-center items-center flex-col">
@@ -64,8 +66,8 @@ const MovieSearch = () => {
         <>
           {movies && movies.length > 0 ? (
             <div className="mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 w-full p-4">
-              {movies.map((movie) => (
-                <MovieTile key={movie.imdbID} movie={movie} />
+              {movies.map((movie, index) => (
+                <MovieTile key={`movie.imdbID - ${index}`} movie={movie} />
               ))}
             </div>
           ) : (
@@ -80,7 +82,7 @@ const MovieSearch = () => {
         </div>
       )}
 
-      {hasMore && movies && movies.length > 0 && !loading && (
+      {!loading && hasMore && movies && movies.length > 0 && (
         <div>
           <div className="mb-20">Scroll to load more</div>
         </div>
