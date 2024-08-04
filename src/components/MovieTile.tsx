@@ -7,7 +7,7 @@ interface MovieTileProps {
 
 const MovieTile = ({ movie }: MovieTileProps) => {
   return (
-    <div className="card bg-base-100 w-96 h-full mx-auto">
+    <div className="card bg-base-100 h-full mx-auto">
       <figure className="px-10 pt-10">
         <img
           src={movie.Poster !== "N/A" ? movie.Poster : defaultImg}

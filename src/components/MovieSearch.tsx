@@ -57,7 +57,7 @@ const MovieSearch = () => {
       {!loading && !error && (
         <>
           {movies && movies.length > 0 ? (
-            <div className="mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3 w-full p-4">
+            <div className="mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 w-full p-4">
               {movies.map((movie) => (
                 <MovieTile key={movie.imdbID} movie={movie} />
               ))}
