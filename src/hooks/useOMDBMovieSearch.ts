@@ -9,7 +9,9 @@ import {
 export const searchOMDBMovies = async (movieTitle: string, page = 1) => {
   try {
     const response = await fetch(
-      `http://www.omdbapi.com/?apikey=69f8a176&type=movie&s=${movieTitle}&page=${page}`
+      `http://www.omdbapi.com/?apikey=${
+        import.meta.env.VITE_OMDB_API_KEY
+      }&type=movie&s=${movieTitle}&page=${page}`
     );
 
     if (!response.ok) {
@@ -56,7 +58,9 @@ export const useOMDBMovieSearch = (debounceDelay = 500) => {
           (prevMovies) =>
             prevMovies && [...prevMovies, ...(response?.Search || [])]
         );
+
         setHasMore(page * 10 < response.totalResults);
+
         setError("");
       } catch (error) {
         console.error(error);
