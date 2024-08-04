@@ -29,8 +29,8 @@ export const useOMDBMovieSearch = (debounceDelay = 500) => {
   const [error, setError] = useState("");
   const [movies, setMovies] = useState<Movie[] | undefined>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
-  const [totalResults, setTotalResults] = useState(0);
 
   // only execute api calls when the user stops typing
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -52,8 +52,11 @@ export const useOMDBMovieSearch = (debounceDelay = 500) => {
           throw new Error(response.Error);
         }
 
-        setMovies(response?.Search || []);
-        setTotalResults(response.totalResults);
+        setMovies(
+          (prevMovies) =>
+            prevMovies && [...prevMovies, ...(response?.Search || [])]
+        );
+        setHasMore(page * 10 < response.totalResults);
         setError("");
       } catch (error) {
         console.error(error);
@@ -80,8 +83,7 @@ export const useOMDBMovieSearch = (debounceDelay = 500) => {
     error,
     movies,
     setSearchTerm,
-    page,
     setPage,
-    totalResults,
+    hasMore,
   };
 };

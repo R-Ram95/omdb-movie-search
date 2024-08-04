@@ -1,9 +1,11 @@
 import MovieTile from "./MovieTile";
 import { useOMDBMovieSearch } from "../hooks/useOMDBMovieSearch";
+import { useEffect, useRef } from "react";
 
 const MovieSearch = () => {
-  const { loading, error, movies, setSearchTerm, page, setPage, totalResults } =
+  const { loading, error, movies, setSearchTerm, hasMore, setPage } =
     useOMDBMovieSearch();
+  const observerTarget = useRef<HTMLDivElement | null>(null);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const title = e.target.value;
@@ -11,17 +13,27 @@ const MovieSearch = () => {
     setSearchTerm(title);
   };
 
-  const handleNextPage = () => {
-    if (page * 10 < totalResults) {
-      setPage(page + 1);
-    }
-  };
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      },
+      { threshold: 1 }
+    );
 
-  const handlePrevPage = () => {
-    if (page > 1) {
-      setPage(page - 1);
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
     }
-  };
+
+    return () => {
+      if (observerTarget.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        observer.unobserve(observerTarget.current);
+      }
+    };
+  }, [hasMore, observerTarget, setPage]);
 
   return (
     <div className="flex justify-center items-center flex-col">
@@ -54,7 +66,7 @@ const MovieSearch = () => {
 
       {error && <div className="mt-10 alert alert-error">{error}</div>}
 
-      {!loading && !error && (
+      {!error && (
         <>
           {movies && movies.length > 0 ? (
             <div className="mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 w-full p-4">
@@ -67,25 +79,10 @@ const MovieSearch = () => {
           )}
         </>
       )}
-
-      {!loading && !error && movies && movies.length > 0 && (
-        <div className="join grid grid-cols-2 mb-5">
-          <button
-            className="join-item btn btn-outline btn-secondary"
-            onClick={handlePrevPage}
-            disabled={page === 1}
-          >
-            Previous page
-          </button>
-          <button
-            className="join-item btn btn-outline btn-secondary"
-            onClick={handleNextPage}
-            disabled={page * 10 > totalResults}
-          >
-            Next
-          </button>
-        </div>
+      {movies && movies.length > 0 && !loading && (
+        <div className="mb-20">Scroll to load more</div>
       )}
+      <div ref={observerTarget && observerTarget}></div>
     </div>
   );
 };
