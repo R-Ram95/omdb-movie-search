@@ -58,12 +58,6 @@ const MovieSearch = () => {
         </svg>
       </label>
 
-      {loading && (
-        <div className="flex justify-center items-center h-64">
-          <span className="loading loading-spinner loading-xs"></span>
-        </div>
-      )}
-
       {error && <div className="mt-10 alert alert-error">{error}</div>}
 
       {!error && (
@@ -79,10 +73,20 @@ const MovieSearch = () => {
           )}
         </>
       )}
-      {movies && movies.length > 0 && !loading && (
-        <div className="mb-20">Scroll to load more</div>
+
+      {loading && (
+        <div className="flex justify-center items-center h-64">
+          <span className="loading loading-dots loading-lg"></span>
+        </div>
       )}
-      <div ref={observerTarget && observerTarget}></div>
+
+      {hasMore && movies && movies.length > 0 && !loading && (
+        <div>
+          <div className="mb-20">Scroll to load more</div>
+        </div>
+      )}
+
+      <div ref={observerTarget}></div>
     </div>
   );
 };
